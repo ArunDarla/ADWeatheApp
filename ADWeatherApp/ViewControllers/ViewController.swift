@@ -9,44 +9,38 @@ import UIKit
 import MapKit
 import CoreLocation
 
-class ViewController: UIViewController, MKMapViewDelegate, UIGestureRecognizerDelegate, CLLocationManagerDelegate {
-
+class ViewController: UIViewController, UIGestureRecognizerDelegate, CLLocationManagerDelegate {
+    
     @IBOutlet weak var mapView: MKMapView!
     let pointAnnot = MKPointAnnotation()
     var locationsArr = [LocationDetails]()
+    
+    var isSearchStatus: Bool = false
+    var filterArr = [LocationDetails]()
+    
     var placeName: String = ""
     var countryName: String = ""
+    var coordinate = CLLocationCoordinate2D()
     
     @IBOutlet weak var citiesTV: UITableView!
     
-    let starBtn = UIButton(type: .detailDisclosure)
     let locManager = CLLocationManager()
+    let favStar = UIButton(type: .contactAdd)
     
-    @IBOutlet weak var locAnnotationBV: UIView!
-    
-    @IBOutlet weak var locName: UILabel!
-    @IBOutlet weak var favStar: UIButton!
-    @IBOutlet weak var closeBtn: UIButton!
+    @IBOutlet weak var searchTF: UITextField!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
+        citiesTV.tableFooterView = UIView(frame: CGRect.zero)
+        citiesTV.backgroundColor = UIColor.clear
+        
         self.title = "Weather app"
-        locAnnotationBV.layer.cornerRadius = 6.0
-        locAnnotationBV.layer.borderWidth = 0.4
-        locAnnotationBV.layer.borderColor = UIColor.darkGray.cgColor
-        
-        closeBtn.layer.cornerRadius = 8.0
-        closeBtn.layer.borderWidth = 0.4
-        closeBtn.layer.borderColor = UIColor.red.cgColor
-        
         
         mapView.showsUserLocation = true
         mapView.delegate = self
         mapView.mapType = .standard
-        mapView.isZoomEnabled = true
-        mapView.isScrollEnabled = true
         
         self.locManager.requestWhenInUseAuthorization()
         citiesTV.register(UINib(nibName: "CityTableViewCell", bundle: nil), forCellReuseIdentifier: "CityTableViewCell")
@@ -66,21 +60,19 @@ class ViewController: UIViewController, MKMapViewDelegate, UIGestureRecognizerDe
             mapView.setCenter(coor, animated: true)
         }
         
+        favStar.addTarget(self, action:#selector(FavoraiteButtonAction), for:.touchUpInside)
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        locAnnotationBV.isHidden = true
+        self.navigationController?.navigationBar.isHidden = false
     }
     
-    @IBAction func closeButtonAction(sender: UIButton){
+    @IBAction func SettingsButtonAction(sender: UIButton){
         
-        let annotations = mapView.annotations.filter {
-            $0 !== self.mapView.userLocation
-        }
-        mapView.removeAnnotations(annotations)
-        citiesTV.reloadData()
-        locAnnotationBV.isHidden = true
-       
+        let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
+        let settingsVC = storyBoard.instantiateViewController(withIdentifier: "SettingsViewController") as! SettingsViewController
+        self.navigationController?.pushViewController(settingsVC, animated: true)
+        
     }
     
     @IBAction func FavoraiteButtonAction(sender: UIButton){
@@ -88,7 +80,7 @@ class ViewController: UIViewController, MKMapViewDelegate, UIGestureRecognizerDe
         let locationsDic = LocationDetails.init(localityName: placeName, country: countryName )
         
         let indexOfLoc = locationsArr.firstIndex{$0.localityName == locationsDic.localityName}
-
+        
         if let availIndex = indexOfLoc {
             locationsArr.remove(at: availIndex)
         }else{
@@ -98,10 +90,9 @@ class ViewController: UIViewController, MKMapViewDelegate, UIGestureRecognizerDe
             $0 !== self.mapView.userLocation
         }
         mapView.removeAnnotations(annotations)
-        locAnnotationBV.isHidden = true
-        print(locationsArr)
+        isSearchStatus = false
         citiesTV.reloadData()
-
+        
         
         
     }
@@ -112,84 +103,81 @@ class ViewController: UIViewController, MKMapViewDelegate, UIGestureRecognizerDe
             $0 !== self.mapView.userLocation
         }
         mapView.removeAnnotations(annotations)
-        locAnnotationBV.isHidden = true
         let selectedPoint = tapGesture.location(in: mapView)
-        let coordinate = mapView.convert(selectedPoint, toCoordinateFrom: mapView)
-        pointAnnot.coordinate = coordinate
-        mapView.addAnnotation(pointAnnot)
+        coordinate = mapView.convert(selectedPoint, toCoordinateFrom: mapView)
         
         let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
         let geoCoder = CLGeocoder()
         geoCoder.reverseGeocodeLocation(location) { [self] (geoCoderPlaces, error) in
             
-            if let places = geoCoderPlaces {
-                locAnnotationBV.isHidden = false
-                let location = places.last
-                placeName = location?.locality ?? ""
-                countryName = location?.country ?? ""
-                locName.text = placeName + ", " + countryName
-                if locationsArr.count != 0 {
-                    let indexOfLoc = locationsArr.firstIndex{$0.localityName == placeName}
-                    if indexOfLoc != nil {
-                        favStar.setImage( UIImage(systemName: "star.fill"), for: .normal)
-                    }else{
-                        favStar.setImage( UIImage(systemName: "star"), for: .normal)
-                    }
+            var placeMark: CLPlacemark!
+            
+            placeMark = geoCoderPlaces?[0]
+            
+            if (placeMark.addressDictionary!["City"] != nil) {
+                placeName = placeMark.addressDictionary!["City"] as! String
+            }else{
+                placeName = placeMark.addressDictionary!["Name"] as! String
+            }
+            countryName = placeMark.country  ?? ""
+            
+            if placeName.count == 0 {
+                return
+            }
+            if countryName.count == 0{
+                pointAnnot.title = placeName
+            }else{
+                pointAnnot.title = placeName + ", " + countryName
+            }
+            
+            pointAnnot.coordinate = coordinate
+            mapView.addAnnotation(pointAnnot)
+            
+            if locationsArr.count != 0 {
+                let indexOfLoc = locationsArr.firstIndex{$0.localityName == placeName}
+                if indexOfLoc != nil {
+                    favStar.setImage( UIImage(systemName: "star.fill"), for: .normal)
                 }else{
                     favStar.setImage( UIImage(systemName: "star"), for: .normal)
                 }
+            }else{
+                favStar.setImage( UIImage(systemName: "star"), for: .normal)
             }
             
         }
-        //mapView.region.span.latitudeDelta/0.5
-        let mpCrd = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: distanceSpain, longitudinalMeters: distanceSpain)
-        mapView.setRegion(mpCrd, animated: true)
         
     }
     
-
 }
 
-extension ViewController {
+extension ViewController: MKMapViewDelegate  {
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        guard annotation is MKPointAnnotation else { return nil }
-
-        let identifier = "Annotation"
-        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
-
-        if annotationView == nil {
-            annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
-            annotationView!.canShowCallout = true
-        } else {
-            annotationView!.annotation = annotation
-        }
         
-        locAnnotationBV.isHidden = false
-        annotationView!.rightCalloutAccessoryView = starBtn
-        annotationView!.canShowCallout = true
+        guard annotation is MKPointAnnotation else { return nil }
+        
+        let identifier = "Annotation"
+        
+        let annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+        annotationView.canShowCallout = true
+        annotationView.isEnabled = true
+        annotationView.rightCalloutAccessoryView = favStar
+        
         return annotationView
+        
     }
     func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
-        if let annotation = views.first(where: { $0.reuseIdentifier == "Annotation" })?.annotation {
-            mapView.selectAnnotation(annotation, animated: true)
-        }
+        self.mapView.selectAnnotation(self.mapView.annotations[0], animated: true)
     }
-
-    func bringMyAnnotationToFront(){
-        
-        if let myAnnotation = mapView.annotations.first(where: { $0 is MKPointAnnotation })
-        {
-            mapView.selectAnnotation(myAnnotation, animated: true)
-        }
-    }
-    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView){
-        bringMyAnnotationToFront()
-    }
-    func mapView(_ mapView: MKMapView, didDeselect: MKAnnotationView){
-
+    func mapView(_ mapView: MKMapView, didDeselect view: MKAnnotationView) {
+        perform(#selector(reSelectAnnotationIfNoneSelected(_:)), with: view.annotation, afterDelay: 0)
     }
     
+    @objc func reSelectAnnotationIfNoneSelected(_ annotation: MKAnnotation) {
+        if mapView.selectedAnnotations.count == 0 {
+            mapView.selectAnnotation(annotation, animated: false)
+        }
+    }
 }
 
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
@@ -201,7 +189,12 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         return 74
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        locationsArr.count
+        if isSearchStatus {
+            return filterArr.count
+        }else{
+            return locationsArr.count
+        }
+        
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CityTableViewCell", for: indexPath) as! CityTableViewCell
@@ -209,7 +202,12 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         cell.cellBV.layer.cornerRadius = 6.0
         cell.cellBV.layer.borderWidth = 0.4
         cell.cellBV.layer.borderColor = UIColor.lightGray.cgColor
-        cell.cityLbl.text = locationsArr[indexPath.row].localityName + ", " + locationsArr[indexPath.row].country
+        if isSearchStatus {
+            cell.cityLbl.text = filterArr[indexPath.row].localityName + ", " + locationsArr[indexPath.row].country
+        }else{
+            cell.cityLbl.text = locationsArr[indexPath.row].localityName + ", " + locationsArr[indexPath.row].country
+        }
+        
         cell.favorateBtn.tag = indexPath.row
         cell.favorateBtn.addTarget(self, action: #selector(favButtonTapped(sender:)), for: .touchUpInside)
         
@@ -219,13 +217,63 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     @objc func favButtonTapped(sender: UIButton ){
         
         let index = sender.tag
-        locationsArr.remove(at: index)
+        if isSearchStatus {
+            filterArr.remove(at: index)
+        }else{
+            locationsArr.remove(at: index)
+        }
+        
         citiesTV.reloadData()
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
+        let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
+        let forcastVC = storyBoard.instantiateViewController(withIdentifier: "CitiesForecastViewController") as! CitiesForecastViewController
+        if isSearchStatus {
+            forcastVC.locality = filterArr[indexPath.row].localityName
+            forcastVC.country = filterArr[indexPath.row].country
+        }else{
+            forcastVC.locality = locationsArr[indexPath.row].localityName
+            forcastVC.country = locationsArr[indexPath.row].country
+        }
+        
+        self.navigationController?.pushViewController(forcastVC, animated: true)
+        
+        
     }
     
 }
 
+extension ViewController: UITextFieldDelegate {
+    
+    
+    public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool{
+        
+        var searchStr: String = ""
+        
+        let text = searchTF.text
+        let textRange = Range(range, in: text!)
+        searchStr = text!.replacingCharacters(in: textRange!, with: string)
+        
+        if searchStr.elementsEqual("") {
+            isSearchStatus = false
+            citiesTV.reloadData()
+            return true
+        }
+        isSearchStatus = true
+        getSearchArrayContains(searchText: searchStr)
+        
+        
+        return true
+    }
+    
+    func getSearchArrayContains(searchText: String){
+        
+        print(searchText)
+        filterArr = locationsArr.filter { $0.localityName.lowercased().hasPrefix(searchText.lowercased()) }
+        citiesTV.reloadData()
+        
+    }
+    
+}
