@@ -260,7 +260,7 @@
                                     <action selector="MetricTypeButtonActionWithSender:" destination="gkv-Ys-ch8" eventType="touchUpInside" id="WKC-Q8-9vi"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="imperial :" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pcP-V0-DaW">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Imperial :" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pcP-V0-DaW">
                                 <rect key="frame" x="191" y="172.5" width="96" height="31"/>
                                 <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="22"/>
                                 <nil key="textColor"/>
@@ -277,28 +277,45 @@
                                     <action selector="ImperialTypeButtonActionWithSender:" destination="gkv-Ys-ch8" eventType="touchUpInside" id="5hM-oD-llZ"/>
                                 </connections>
                             </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gIy-x5-UtW">
+                                <rect key="frame" x="0.0" y="264" width="414" height="538"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Demo video" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2kv-Nz-kZd">
+                                <rect key="frame" x="145" y="231" width="124" height="29"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="kZb-2G-UYL"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="QYi-bL-Lum" firstAttribute="top" secondItem="tWa-ux-TwN" secondAttribute="bottom" constant="14" id="6Yw-KO-Qsl"/>
                             <constraint firstItem="pcP-V0-DaW" firstAttribute="centerY" secondItem="rbu-Zm-J3p" secondAttribute="centerY" id="7h5-fp-aKU"/>
+                            <constraint firstItem="gIy-x5-UtW" firstAttribute="top" secondItem="rbu-Zm-J3p" secondAttribute="bottom" constant="60" id="AHE-nQ-UZg"/>
+                            <constraint firstItem="gIy-x5-UtW" firstAttribute="top" secondItem="2kv-Nz-kZd" secondAttribute="bottom" constant="4" id="BIp-st-fJg"/>
                             <constraint firstItem="pcP-V0-DaW" firstAttribute="centerX" secondItem="lpU-ZX-TeM" secondAttribute="centerX" constant="32" id="CEc-kf-A66"/>
                             <constraint firstItem="tWa-ux-TwN" firstAttribute="leading" secondItem="kZb-2G-UYL" secondAttribute="leading" constant="16" id="Egb-La-3ba"/>
+                            <constraint firstItem="2kv-Nz-kZd" firstAttribute="centerX" secondItem="gIy-x5-UtW" secondAttribute="centerX" id="GKN-Cs-6u5"/>
                             <constraint firstItem="QYi-bL-Lum" firstAttribute="leading" secondItem="kZb-2G-UYL" secondAttribute="leading" constant="20" id="Uaa-mh-ReY"/>
                             <constraint firstItem="6IG-fa-Ghe" firstAttribute="leading" secondItem="lpU-ZX-TeM" secondAttribute="leading" id="Veq-rA-nz9"/>
                             <constraint firstItem="0tA-xP-9Ta" firstAttribute="centerY" secondItem="pcP-V0-DaW" secondAttribute="centerY" id="Wa6-xE-x1w"/>
                             <constraint firstItem="0tA-xP-9Ta" firstAttribute="leading" secondItem="pcP-V0-DaW" secondAttribute="trailing" constant="6" id="Xcg-jW-bXl"/>
+                            <constraint firstItem="kZb-2G-UYL" firstAttribute="bottom" secondItem="gIy-x5-UtW" secondAttribute="bottom" constant="60" id="a8k-IK-hXZ"/>
                             <constraint firstItem="6IG-fa-Ghe" firstAttribute="top" secondItem="lpU-ZX-TeM" secondAttribute="top" id="c7F-uo-JJr"/>
+                            <constraint firstItem="gIy-x5-UtW" firstAttribute="leading" secondItem="kZb-2G-UYL" secondAttribute="leading" id="eDs-2x-nIQ"/>
                             <constraint firstItem="kZb-2G-UYL" firstAttribute="trailing" secondItem="6IG-fa-Ghe" secondAttribute="trailing" id="eQh-VC-DL0"/>
                             <constraint firstItem="rbu-Zm-J3p" firstAttribute="centerY" secondItem="QYi-bL-Lum" secondAttribute="centerY" id="k6v-bh-LVM"/>
                             <constraint firstItem="rbu-Zm-J3p" firstAttribute="leading" secondItem="QYi-bL-Lum" secondAttribute="trailing" constant="6" id="kqf-C5-DgM"/>
+                            <constraint firstItem="kZb-2G-UYL" firstAttribute="trailing" secondItem="gIy-x5-UtW" secondAttribute="trailing" id="nCS-yG-hI4"/>
                             <constraint firstItem="nex-2t-NQ9" firstAttribute="centerY" secondItem="1ax-FK-mws" secondAttribute="centerY" id="rPE-Lc-Tfa"/>
                             <constraint firstItem="nex-2t-NQ9" firstAttribute="leading" secondItem="kZb-2G-UYL" secondAttribute="leading" constant="12" id="x8d-re-Ykx"/>
                             <constraint firstItem="tWa-ux-TwN" firstAttribute="top" secondItem="6IG-fa-Ghe" secondAttribute="bottom" constant="42" id="yIK-mO-RSZ"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="demoVideoBV" destination="gIy-x5-UtW" id="6QU-WA-b5n"/>
                         <outlet property="imperialBtn" destination="0tA-xP-9Ta" id="eQd-r1-eAT"/>
                         <outlet property="metricBtn" destination="rbu-Zm-J3p" id="RUz-Me-SyM"/>
                     </connections>

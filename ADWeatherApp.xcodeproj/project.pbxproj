@@ -23,6 +23,7 @@
 		00F8744A26346ADE00AE2D87 /* DayCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F8744826346ADE00AE2D87 /* DayCollectionViewCell.swift */; };
 		00F8744B26346ADE00AE2D87 /* DayCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 00F8744926346ADE00AE2D87 /* DayCollectionViewCell.xib */; };
 		00F874562635D1C100AE2D87 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F874552635D1C100AE2D87 /* SettingsViewController.swift */; };
+		00F8745D2635F9FC00AE2D87 /* DemoVideo.mov in Resources */ = {isa = PBXBuildFile; fileRef = 00F8745C2635F9FC00AE2D87 /* DemoVideo.mov */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +45,7 @@
 		00F8744826346ADE00AE2D87 /* DayCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayCollectionViewCell.swift; sourceTree = "<group>"; };
 		00F8744926346ADE00AE2D87 /* DayCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DayCollectionViewCell.xib; sourceTree = "<group>"; };
 		00F874552635D1C100AE2D87 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		00F8745C2635F9FC00AE2D87 /* DemoVideo.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = DemoVideo.mov; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +85,7 @@
 				00F874372634497B00AE2D87 /* Model */,
 				00F874382634499200AE2D87 /* Custom cell */,
 				00F8743E26344C5500AE2D87 /* Common defines */,
+				00F8745F2635FA0700AE2D87 /* Demo video */,
 				00F87440263458FF00AE2D87 /* API request */,
 				00F8740C26334EAD00AE2D87 /* Assets.xcassets */,
 				00F8740E26334EAD00AE2D87 /* LaunchScreen.storyboard */,
@@ -135,6 +138,14 @@
 				00F874412634591500AE2D87 /* APIRequest.swift */,
 			);
 			path = "API request";
+			sourceTree = "<group>";
+		};
+		00F8745F2635FA0700AE2D87 /* Demo video */ = {
+			isa = PBXGroup;
+			children = (
+				00F8745C2635F9FC00AE2D87 /* DemoVideo.mov */,
+			);
+			name = "Demo video";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -196,6 +207,7 @@
 			files = (
 				00F8741026334EAD00AE2D87 /* LaunchScreen.storyboard in Resources */,
 				00F8740D26334EAD00AE2D87 /* Assets.xcassets in Resources */,
+				00F8745D2635F9FC00AE2D87 /* DemoVideo.mov in Resources */,
 				00F8744B26346ADE00AE2D87 /* DayCollectionViewCell.xib in Resources */,
 				00F8742926341F0C00AE2D87 /* CityTableViewCell.xib in Resources */,
 				00F8740826334EAC00AE2D87 /* Main.storyboard in Resources */,

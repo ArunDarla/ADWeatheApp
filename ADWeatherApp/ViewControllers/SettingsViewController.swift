@@ -6,15 +6,19 @@
 //
 
 import UIKit
+import AVFoundation
 
 class SettingsViewController: UIViewController {
     
     @IBOutlet weak var metricBtn: UIButton!
     @IBOutlet weak var imperialBtn: UIButton!
     
+    @IBOutlet weak var demoVideoBV: UIView!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+    
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -34,6 +38,27 @@ class SettingsViewController: UIViewController {
         UserDefaults.standard.synchronize()
         
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+
+        playDemoVIdeoVideo(fileName: "DemoVideo.mov")
+    }
+    private func playDemoVIdeoVideo(fileName:String) {
+        let file = fileName.components(separatedBy: ".")
+
+        guard let path = Bundle.main.path(forResource: file[0], ofType:file[1]) else {
+            debugPrint( "\(file.joined(separator: ".")) Demo video file not found")
+            return
+        }
+        
+        let player = AVPlayer(url: URL(fileURLWithPath: path))
+        let playerLayer = AVPlayerLayer(player: player)
+        playerLayer.frame = demoVideoBV.bounds
+        demoVideoBV.layer.addSublayer(playerLayer)
+        player.play()
+    }
+    
     @IBAction func HomeButtonAction(sender: UIButton){
         self.navigationController?.popViewController(animated: true)
     }
